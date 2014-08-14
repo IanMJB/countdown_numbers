@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <exception>
+#include <cmath>
 
 #define INPUT_NUMBERS 6
 
@@ -61,8 +62,8 @@ bool try_permutation(int &target, vector<int> &set)
 {
     vector<ARITH_OP> all = {add, sub, mul, ARITH_OP::div, ARITH_OP::ignore};
     vector<ARITH_OP> op_map = { add, add, add, add, add, add};
-    vector<ARITH_OP> closest_op; 
-    double closest = 0;
+    static vector<ARITH_OP> closest_op; 
+    static double closest;
     //iterate over the set
     int s = all.size();
     for(int i=0;i<s;++i){
@@ -85,7 +86,7 @@ bool try_permutation(int &target, vector<int> &set)
                                     cout << OPS[static_cast<int>(op)] << " ";
                                 }
                                 exit(EXIT_SUCCESS);
-                            }else if(((closest-target)*(closest-target)) > ((res-target)*(res-target))){
+                            }else if(abs(closest-target) > abs(res-target)){
                                 cout << "New closest value!" << endl;
                                 cout << res << endl;
                                 closest = res;
@@ -106,6 +107,15 @@ bool try_permutation(int &target, vector<int> &set)
         }
         op_map[0] = static_cast<ARITH_OP>(i);
     }
+
+    cout << "Best so far: " << closest << endl;
+    for(int i: set){
+        cout << i << " ";
+    }
+    cout << endl;
+    for(ARITH_OP op: closest_op)
+        cout << OPS[static_cast<int>(op)] << " ";
+    cout << endl;
     return false;
 } 
 
@@ -127,7 +137,7 @@ int main(int argc, char *argv[])
     do{
         try_permutation(target_number, set);
     }while(next_permutation(set.begin(), set.end()));
-    cout << "Fin!" << endl;
+    cout << "Fin! Result not found" << endl;
     return 0;
 }
 
